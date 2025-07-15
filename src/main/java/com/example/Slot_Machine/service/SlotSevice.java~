@@ -1,0 +1,20 @@
+package com.example.Slot_Machine.service;
+
+import com.example.Slot_Machine.model.SpinResult;
+import com.example.Slot_Machine.model.Symbol;
+import com.example.Slot_Machine.model.User;
+import com.example.Slot_Machine.model.Wallet;
+
+import java.util.List;
+
+import static java.lang.Math.random;
+
+public SpinResult spin(User user, int stake) {
+    Wallet wallet = user.getWallet();
+    wallet.debit(stake);
+    List<Symbol> reels = List.of(random(), random(), random());
+    int payout = calculate(reels) * stake;
+    wallet.credit(payout);
+    walletRepo.save(wallet);
+    return new SpinResult(reels, payout, wallet.getBalance());
+}
